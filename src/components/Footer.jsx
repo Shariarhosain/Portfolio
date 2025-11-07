@@ -12,7 +12,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gray-900 text-white py-12 px-6 sm:px-8">
+    <footer className="bg-gradient-to-br from-slate-900 via-blue-900/30 to-gray-900 text-white py-12 px-6 sm:px-8 border-t border-blue-500/20">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 text-center md:text-left">
           <motion.div

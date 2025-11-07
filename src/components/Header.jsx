@@ -13,7 +13,7 @@ const Header = () => {
       setIsVisible(window.scrollY > 100);
       
       // Detect active section
-      const sections = ['home', 'about', 'skills', 'projects', 'contact'];
+      const sections = ['home', 'about', 'experience',  'skills', 'projects', 'education', 'contact'];
       const current = sections.find(section => {
         const element = document.getElementById(section);
         if (element) {
@@ -35,6 +35,8 @@ const Header = () => {
   const navItems = [
     { name: 'Home', href: '#home' },
     { name: 'About', href: '#about' },
+    { name: 'Experience', href: '#experience' },
+    { name: 'Education', href: '#education' },
     { name: 'Skills', href: '#skills' },
     { name: 'Projects', href: '#projects' },
     { name: 'Contact', href: '#contact' },
@@ -48,7 +50,7 @@ const Header = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="fixed w-full z-50 bg-gray-900/95 backdrop-blur-md shadow-2xl border-b border-white/10"
+          className="fixed w-full z-50 bg-gradient-to-r from-slate-900/95 via-gray-900/95 to-slate-900/95 backdrop-blur-md shadow-2xl border-b border-blue-500/20"
         >
       <nav className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">

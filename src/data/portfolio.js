@@ -123,3 +123,101 @@ export const projectsData = [
     gradient: "from-blue-500 to-indigo-500"
   }
 ];
+
+// Experience Data
+export const experienceData = [
+  {
+    title: "Backend Developer (Full-time)",
+    company: "MAK Tech Solution",
+    location: "Dhaka, Bangladesh",
+    period: "06/2025 - Present",
+    description: "A technology solutions provider specializing in web Solution",
+    achievements: [
+      "Contributing to backend development for various projects using Node.js (Express.js, Nest.js, Prisma, Redis, RabbitMQ)",
+      "Engage in problem-solving and team leadership during development phases."
+    ],
+    technologies: ["Node.js", "Express.js", "NestJS", "Prisma", "Redis", "RabbitMQ"]
+  },
+  {
+    title: "MERN Developer (Backend) (Internship)",
+    company: "MAK Tech Solution",
+    location: "Dhaka, Bangladesh",
+    period: "03/2025 - 05/2025",
+    description: "A technology solutions provider specializing in web Solution",
+    achievements: [
+      "Internship as a MERN Developer focusing on backend development.",
+      "Gained hands-on experience in full-stack applications"
+    ],
+    technologies: ["MongoDB", "Express.js", "React.js", "Node.js"]
+  }
+];
+
+// Education Data
+export const educationData = [
+  {
+    degree: "Bachelor of Science in Computer Science and Engineering",
+    institution: "American International University Bangladesh (AIUB)",
+    location: "Dhaka, Bangladesh",
+    period: "02/2021 - 05/2025",
+    gpa: "3.86 / 4.00",
+    description: "Focused on software engineering, algorithms, data structures, and modern programming paradigms."
+  },
+  {
+    degree: "Higher Secondary Certificate (HSC)",
+    institution: "Adamjee Cantonment College",
+    location: "Dhaka, Bangladesh",
+    period: "01/2017 - 01/2019",
+    description: "Science background with emphasis on mathematics and physics."
+  },
+  {
+    degree: "Secondary School Certificate (SSC)",
+    institution: "Adamjee Cantonment Public School",
+    location: "Dhaka, Bangladesh",
+    period: "01/2013 - 01/2017",
+    description: "Foundation in science and mathematics."
+  }
+];
+
+// Skills Data - Focus on backend development skills
+export const skillsData = {
+  categories: [
+    {
+      name: "Backend Development",
+      skills: [
+        { name: "Node.js", level: 95, icon: "fab fa-node-js" },
+        { name: "Express.js", level: 90, icon: "fas fa-server" },
+        { name: "NestJS", level: 85, icon: "fas fa-code" },
+        { name: "TypeScript", level: 80, icon: "fab fa-js-square" },
+        { name: "JavaScript", level: 90, icon: "fab fa-js-square" }
+      ]
+    },
+    {
+      name: "Databases",
+      skills: [
+        { name: "MongoDB", level: 90, icon: "fas fa-database" },
+        { name: "PostgreSQL", level: 85, icon: "fas fa-database" },
+        { name: "Redis", level: 80, icon: "fas fa-memory" },
+        { name: "Prisma ORM", level: 85, icon: "fas fa-layer-group" }
+      ]
+    },
+    {
+      name: "Tools & Technologies",
+      skills: [
+        { name: "RabbitMQ", level: 75, icon: "fas fa-exchange-alt" },
+        { name: "Docker", level: 70, icon: "fab fa-docker" },
+        { name: "Git", level: 90, icon: "fab fa-git-alt" },
+        { name: "Linux", level: 75, icon: "fab fa-linux" },
+        { name: "AWS", level: 65, icon: "fab fa-aws" }
+      ]
+    },
+    {
+      name: "Frontend (Familiar)",
+      skills: [
+        { name: "React.js", level: 70, icon: "fab fa-react" },
+        { name: "HTML5", level: 85, icon: "fab fa-html5" },
+        { name: "CSS3", level: 80, icon: "fab fa-css3-alt" },
+        { name: "Tailwind CSS", level: 75, icon: "fas fa-paint-brush" }
+      ]
+    }
+  ]
+};

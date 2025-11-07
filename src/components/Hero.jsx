@@ -1,15 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { FaGithub, FaLinkedin, FaEnvelope, FaArrowDown } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 
 const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
+
+  // Typewriter effect state - using useMemo to prevent re-creation on every render
+  const wordsToType = useMemo(() => [
+    "Backend Developer",
+    "API Designer", 
+    "Problem Solver",
+    "Tech Enthusiast",
+    "Team Leader"
+  ], []);
+
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [currentText, setCurrentText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [typingSpeed, setTypingSpeed] = useState(150);
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Typewriter effect
+  useEffect(() => {
+    const handleTyping = () => {
+      const fullWord = wordsToType[currentWordIndex];
+
+      if (isDeleting) {
+        setCurrentText(fullWord.substring(0, currentText.length - 1));
+        setTypingSpeed(80);
+      } else {
+        setCurrentText(fullWord.substring(0, currentText.length + 1));
+        setTypingSpeed(150);
+      }
+
+      if (!isDeleting && currentText === fullWord) {
+        setTypingSpeed(2000);
+        setIsDeleting(true);
+      } else if (isDeleting && currentText === '') {
+        setIsDeleting(false);
+        setCurrentWordIndex((prevIndex) => (prevIndex + 1) % wordsToType.length);
+        setTypingSpeed(150);
+      }
+    };
+
+    const timer = setTimeout(handleTyping, typingSpeed);
+    return () => clearTimeout(timer);
+  }, [currentText, isDeleting, typingSpeed, currentWordIndex, wordsToType]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -31,7 +72,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center pt-20 px-6 bg-gradient-to-br from-gray-900 via-gray-800 to-black overflow-hidden">
+    <section id="home" className="relative min-h-screen flex items-center justify-center pt-20 px-6 bg-gradient-to-br from-slate-900 via-blue-900/30 to-gray-900 overflow-hidden">
       {/* Animated Background Particles */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
@@ -90,14 +131,15 @@ const Hero = () => {
           variants={itemVariants}
           className="mb-6"
         >
-          <motion.p
-            className="text-2xl m-5 md:text-3xl text-gray-300 mb-2"
-            animate={{ opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <span className="font-bold text-white">Backend Developer | API Designer | Tech Enthusiast </span> 
-          </motion.p>
-          
+          <div className="h-16 md:h-20 flex items-center justify-center">
+            <div className="text-2xl md:text-3xl text-center">
+              <span className="text-gray-200">I'm a </span>
+              <span className="text-white font-bold">
+                {currentText}
+              </span>
+              <span className="text-white font-bold animate-blink">|</span>
+            </div>
+          </div>
         </motion.div>
 
         <motion.p
@@ -160,14 +202,73 @@ const Hero = () => {
           </motion.button>
         </motion.a>
 
+        {/* Animated Scroll Down Indicator */}
         <motion.div
-          animate={{ y: [0, 12, 0], opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 3, repeat: Infinity }}
-          className="mt-12"
+          variants={itemVariants}
+          className="mt-16 mb-8 flex justify-center"
         >
-          <FaArrowDown className="mx-auto text-cyan-400" size={28} />
+          <motion.a
+            href="#about"
+            aria-label="Scroll down"
+            animate={{ y: [0, 12, 0], opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          >
+            <div className="w-12 h-16 rounded-full border-2 border-cyan-400 flex items-center justify-center cursor-pointer hover:border-blue-400 transition-colors duration-300">
+              <svg 
+                className="w-6 h-6 text-cyan-400 hover:text-blue-400 transition-colors duration-300" 
+                fill="none" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="3" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+              </svg>
+            </div>
+          </motion.a>
         </motion.div>
+
       </motion.div>
+
+      {/* Custom CSS for typewriter and scroll animations */}
+      <style jsx>{`
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+        .animate-blink {
+          animation: blink 1s step-end infinite;
+        }
+
+        @keyframes bounce-slow {
+          0%, 100% {
+            transform: translateY(-25%);
+            animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+          }
+          50% {
+            transform: translateY(0);
+            animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+          }
+        }
+        .animate-bounce-slow {
+          animation: bounce-slow 2s infinite;
+        }
+        
+        @keyframes pulse-slow {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.7;
+            transform: scale(0.95);
+          }
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+      `}</style>
     </section>
   );
 };
