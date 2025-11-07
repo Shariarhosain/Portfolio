@@ -14,8 +14,7 @@ const SEOHead = ({ pageTitle, pageDescription, pageKeywords, canonicalUrl }) => 
       ogType,
       twitterCard
     },
-    website,
-    location
+    website
   } = personalInfo;
 
   // Use page-specific data or fallback to default

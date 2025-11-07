@@ -54,7 +54,6 @@ const diagramCache = new Map();
 // Mermaid component for rendering diagrams
 const MermaidChart = ({ chart }) => {
   const chartRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!chart || !chartRef.current) return;
@@ -853,7 +852,6 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
                       return (
                         <div className="image-container my-4" key={`img-${project?.id || 'default'}-${src}`}>
                           <img
-                            key={`${project?.id || 'default'}-${imageSrc}`}
                             src={imageSrc}
                             alt={alt}
                             title={title}

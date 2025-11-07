@@ -1,25 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  FaReact,
   FaNodeJs,
   FaDatabase,
-  FaHtml5,
-  FaCss3Alt,
-  FaJs,
   FaGitAlt,
   FaPython,
-  FaCode,
-  FaServer,
   FaCog,
 } from 'react-icons/fa';
 import {
   SiMongodb,
   SiExpress,
-  SiTailwindcss,
-  SiTypescript,
   SiPostgresql,
-  SiRedux,
   SiNestjs,
   SiPhp,
   SiLaravel,
