@@ -22,7 +22,7 @@ Allow: /
 # Disallow: /private/
 
 # Sitemap location
-Sitemap: {SITE_URL}/sitemap.xml
+Sitemap: https://sanny.up.railway.app/sitemap.xml
 
 # Crawl-delay (optional)
 Crawl-delay: 1
