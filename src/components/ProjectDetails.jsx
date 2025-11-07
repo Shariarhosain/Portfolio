@@ -139,10 +139,61 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
   const [error, setError] = useState('');
   const [repoStats, setRepoStats] = useState(null);
 
+  const fetchProjectDetails = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      // Extract owner and repo from GitHub URL
+      const githubUrl = project.github;
+      const match = githubUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
+      
+      if (!match) {
+        throw new Error('Invalid GitHub URL');
+      }
 
+      const [, owner, repo] = match;
+      
+      let repoData;
+      // Fetch repository stats
+      const repoResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+      if (repoResponse.ok) {
+        repoData = await repoResponse.json();
+        setRepoStats(repoData);
+      }
+
+      // Fetch README content
+      const readmeResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/readme`);
+      
+      if (!readmeResponse.ok) {
+        // Try fetching from default branch if main fails
+        const defaultBranch = repoData?.default_branch || 'main';
+        const readmeResponseFallback = await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${defaultBranch}/README.md`);
+        
+        if (readmeResponseFallback.ok) {
+          const readmeText = await readmeResponseFallback.text();
+          setReadmeContent(readmeText);
+        } else {
+          throw new Error(`Failed to fetch README (checked default branch: ${defaultBranch})`);
+        }
+      } else {
+        const readmeData = await readmeResponse.json();
+        const readmeContentDecoded = atob(readmeData.content);
+        setReadmeContent(readmeContentDecoded);
+      }
+      
+    } catch (err) {
+      console.error('❌ Error fetching project details:', err);
+      setError(`Failed to load project details. Please check the GitHub link or try again later. Error: ${err.message}`);
+      // Provide fallback content on error
+      const fallbackContent = `# ${project.title}\n\n${project.description}\n\n## Error\n\nCould not load README from GitHub. You can try viewing it directly on the [repository](${project.github}).`;
+      setReadmeContent(fallbackContent);
+    } finally {
+      setLoading(false);
+    }
+  }, [project]);
 
   // Always fetch fresh data on project change
-  // eslint-disable-next-line no-use-before-define
   useEffect(() => {
     if (!isOpen || !project) {
       return;
@@ -173,237 +224,30 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
     setLoading(true);
     fetchProjectDetails();
     
-    // eslint-disable-next-line no-use-before-define
-  }, [isOpen, project?.github, project?.id, fetchProjectDetails, project]); // Always fetch when these change
+  }, [isOpen, project, fetchProjectDetails]); // Always fetch when these change
 
-  const fetchProjectDetails = useCallback(async () => {
-    setLoading(true);
-    setError('');
-    
-    try {
-      // Extract owner and repo from GitHub URL
-      const githubUrl = project.github;
-      const match = githubUrl.match(/github\.com\/([^/]+)\/([^/]+)/);
-      
-      if (!match) {
-        throw new Error('Invalid GitHub URL');
-      }
+  const modalRef = useRef(null);
 
-      const [, owner, repo] = match;
-      
-      // Fetch repository stats
-      const repoResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
-      if (repoResponse.ok) {
-        const repoData = await repoResponse.json();
-        setRepoStats(repoData);
-      }
-
-      // Fetch README content
-      const readmeResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/readme`);
-      
-      if (readmeResponse.ok) {
-        const readmeData = await readmeResponse.json();
-        
-        // Decode the base64 content properly
-        let content;
-        try {
-          // First decode base64
-          const base64Content = readmeData.content;
-          const binaryString = atob(base64Content);
-          
-          // Convert binary string to Uint8Array
-          const bytes = new Uint8Array(binaryString.length);
-          for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-          }
-          
-          // Decode as UTF-8
-          content = new TextDecoder('utf-8').decode(bytes);
-        } catch (error) {
-          console.warn('UTF-8 decode failed, trying fallback:', error);
-          content = atob(readmeData.content);
-        }
-        
-        // Get the default branch from repo data
-        const defaultBranch = repoStats?.default_branch || 'main';
-        
-        // Convert relative image paths to absolute GitHub URLs
-        content = content.replace(
-          /!\[([^\]]*)\]\((?!https?:\/\/)(?!data:)([^)]+)\)/g,
-          `![$$1](https://raw.githubusercontent.com/${owner}/${repo}/${defaultBranch}/$$2)`
-        );
-        
-        // Handle ./ relative paths
-        content = content.replace(
-          /!\[([^\]]*)\]\(\.\/([^)]+)\)/g,
-          `![$$1](https://raw.githubusercontent.com/${owner}/${repo}/${defaultBranch}/$$2)`
-        );
-        
-        // Handle ../ relative paths  
-        content = content.replace(
-          /!\[([^\]]*)\]\(\.\.\/([^)]+)\)/g,
-          `![$$1](https://raw.githubusercontent.com/${owner}/${repo}/${defaultBranch}/$$2)`
-        );
-        
-        // Convert relative links to absolute GitHub URLs
-        content = content.replace(
-          /\[([^\]]+)\]\((?!https?:\/\/)(?!#)(?!mailto:)([^)]+)\)/g,
-          `[$$1](https://github.com/${owner}/${repo}/blob/${defaultBranch}/$$2)`
-        );
-        
-        // Fix encoding issues - these are common UTF-8 to Latin-1 mistranslations
-        const encodingFixes = {
-          // Common UTF-8 emoji characters that get garbled
-          'â¡': '⚡',          // Lightning bolt
-          'ð': '📁',           // Folder (primary)
-          'ðð': '📁',          // Folder (alternative)
-          'ð¦': '📦',          // Package
-          'ð§': '🔧',          // Wrench  
-          'ð¨': '🔨',          // Hammer
-          'âï¸': '⚙️',         // Gear
-          'ðrocket': '🚀',     // Rocket (avoiding dup)
-          'ð»': '💻',          // Computer
-          'ðbooks': '📚',      // Books (avoiding dup)
-          'ð¡': '💡',          // Light bulb
-          'ðconstruction': '🚧', // Construction (avoiding dup)
-          'â ï¸': '⚠️',        // Warning
-          'âï¸info': 'ℹ️',     // Info (avoiding dup)
-          'â': '✅',           // Check mark
-          'âx': '❌',          // X mark (avoiding dup)
-          'ðmemo': '📝',       // Memo (avoiding dup)
-          'ðchart': '📈',      // Chart (avoiding dup)
-          'ðlock': '🔒',       // Lock (avoiding dup)
-          'ðkey': '🔑',        // Key (avoiding dup)
-          'ð¥': '🔥',          // Fire
-          'ðgem': '💎',        // Gem (avoiding dup)
-          'â­': '⭐',          // Star
-          'ð¯': '🎯',          // Direct hit
-          'ðglobe': '🌐',      // Globe (avoiding dup)
-          'ðmag': '🔍',        // Magnifying glass (avoiding dup)
-          'ðart': '🎨',        // Artist palette (avoiding dup)
-          'ð¬speech': '💬',    // Speech balloon (avoiding dup)
-          'â°': '⏰',          // Clock
-          'ð¢': '🔢',          // Input numbers
-          'ð±phone': '📱',     // Mobile phone (avoiding dup)
-          'ðº': '📺',          // Television
-          'ðheadphone': '🎧',  // Headphone (avoiding dup)
-          'ð¤': '🤖',          // Robot
-          'ðmicroscope': '🔬', // Microscope (avoiding dup)
-          'ð¡ï¸': '🛡️',       // Shield
-          'âbalance': '⚖️',    // Balance scale (avoiding dup)
-          'ðuser': '👤',       // Bust in silhouette (avoiding dup)
-          'ðusers': '👥',      // Busts in silhouette (avoiding dup)
-          'ðbar_chart': '📊',  // Bar chart (avoiding dup)
-          'ðlocked': '🔐',     // Closed lock with key (avoiding dup)
-          'ðclipboard': '📋',  // Clipboard (avoiding dup)
-          'ðdesktop': '🖥️',   // Desktop computer (avoiding dup)
-          'ð±seedling': '🌱',  // Seedling (avoiding dup)
-          'ðstar2': '🌟',      // Glowing star (avoiding dup)
-          'â¨': '✨',          // Sparkles
-        };
-
-        // Apply encoding fixes
-        Object.entries(encodingFixes).forEach(([garbled, correct]) => {
-          content = content.replace(new RegExp(garbled.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), correct);
-        });
-        
-        // Additional fallback for common Windows encoding issues
-        content = content.replace(/Ã¢ÂÂ¡/g, '⚡');  // Lightning bolt - alternative encoding
-        content = content.replace(/ðÂÂ/g, '📁');    // Folder - alternative encoding
-        content = content.replace(/ðÂÂ¦/g, '📦');   // Package - alternative encoding
-        
-        // Clean up any remaining problematic sequences
-        content = content.replace(/Â/g, '');  // Remove lone Â characters
-        content = content.replace(/Ã/g, '');   // Remove lone Ã characters
-        
-        // Normalize whitespace and line endings
-        content = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-        
-        // Fix HTML entities
-        content = content.replace(/&lt;/g, '<');
-        content = content.replace(/&gt;/g, '>');
-        content = content.replace(/&amp;/g, '&');
-        content = content.replace(/&quot;/g, '"');
-        content = content.replace(/&#39;/g, "'");
-        
-        // Fix emoji hex codes (both 4 and 6+ digit codes)
-        content = content.replace(/&#x([0-9A-Fa-f]{4,6});/g, (match, hex) => {
-          try {
-            return String.fromCodePoint(parseInt(hex, 16));
-          } catch (e) {
-            return match;
-          }
-        });
-        
-        // Fix emoji decimal codes
-        content = content.replace(/&#(\d{4,6});/g, (match, dec) => {
-          try {
-            return String.fromCodePoint(parseInt(dec, 10));
-          } catch (e) {
-            return match;
-          }
-        });
-        
-        // Fix Unicode escape sequences
-        content = content.replace(/\\u([0-9A-Fa-f]{4})/g, (match, hex) => {
-          try {
-            return String.fromCharCode(parseInt(hex, 16));
-          } catch (e) {
-            return match;
-          }
-        });
-        
-        // Fix common emoji shortcodes
-        const emojiShortcodes = {
-          ':file_folder:': '📁',
-          ':package:': '📦',
-          ':wrench:': '🔧',
-          ':hammer:': '🔨',
-          ':gear:': '⚙️',
-          ':rocket:': '🚀',
-          ':computer:': '💻',
-          ':books:': '📚',
-          ':bulb:': '💡',
-          ':construction:': '🚧',
-          ':warning:': '⚠️',
-          ':information_source:': 'ℹ️',
-          ':heavy_check_mark:': '✅',
-          ':x:': '❌',
-          ':memo:': '📝',
-          ':chart_with_upwards_trend:': '📈',
-          ':lock:': '�',
-          ':key:': '🔑',
-          ':fire:': '🔥',
-          ':gem:': '💎',
-          ':star:': '⭐',
-          ':dart:': '🎯',
-          ':globe_with_meridians:': '🌐',
-          ':mag:': '�',
-          ':art:': '🎨'
-        };
-        
-        Object.entries(emojiShortcodes).forEach(([shortcode, emoji]) => {
-          content = content.replace(new RegExp(shortcode.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), emoji);
-        });
-        
-        // Debug: Log sample of processed content
-        console.log('Processed README content sample:', content.substring(0, 200));
-        
-        setReadmeContent(content);
-        console.log('✅ README data loaded fresh for:', project.title);
-        
-      } else {
-        const fallbackContent = `# ${project.title}\n\n${project.description}\n\n## Technologies Used\n\n${project.technologies?.map(tech => `- ${tech}`).join('\n') || ''}\n\n## About This Project\n\nThis project demonstrates modern development practices and showcases expertise in ${project.technologies?.join(', ') || 'various technologies'}.\n\n*README content could not be loaded from GitHub repository.*`;
-        setReadmeContent(fallbackContent);
-      }
-    } catch (err) {
-      setError('Failed to load project details');
-      const errorContent = `# ${project.title}\n\n${project.description}\n\n## Technologies Used\n\n${project.technologies?.map(tech => `- ${tech}`).join('\n') || ''}`;
-      setReadmeContent(errorContent);
-    } finally {
-      setLoading(false);
+  // Handle clicks outside the modal
+  const handleClickOutside = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      onClose();
     }
-  }, [project, repoStats?.default_branch]);
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      // Add event listener for clicks outside the modal
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      // Clean up event listener when modal is closed
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   if (!project) return null;
 
