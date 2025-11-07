@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaGithub, FaStar, FaCodeBranch, FaExternalLinkAlt } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
@@ -124,19 +124,6 @@ const MermaidChart = ({ chart }) => {
     
   }, [chart]);
 
-  if (isLoading) {
-    return (
-      <div className="bg-gray-800 border border-white/10 rounded-lg p-4 my-4">
-        <div className="text-gray-400 text-center">
-          <div className="inline-flex items-center text-sm">
-            <div className="w-4 h-4 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mr-2"></div>
-            Loading diagram...
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div 
       ref={chartRef}
@@ -183,9 +170,9 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
     setLoading(true);
     fetchProjectDetails();
     
-  }, [isOpen, project?.github, project?.id]); // Always fetch when these change
+  }, [isOpen, project?.github, project?.id, fetchProjectDetails]); // Always fetch when these change
 
-  const fetchProjectDetails = async () => {
+  const fetchProjectDetails = useCallback(async () => {
     setLoading(true);
     setError('');
     
@@ -412,7 +399,7 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [project]);
 
   if (!project) return null;
 
@@ -762,20 +749,6 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
                         {children}
                       </p>
                     ),
-                    code: ({ inline, children, className }) => {
-                      if (inline) {
-                        return (
-                          <code className="bg-gray-800 text-cyan-300 px-2 py-1 rounded text-sm font-mono">
-                            {children}
-                          </code>
-                        );
-                      }
-                      return (
-                        <code className={`${className} text-gray-300`}>
-                          {children}
-                        </code>
-                      );
-                    },
                     pre: ({ children, ...props }) => {
                       // Check if this pre block contains a mermaid code block
                       const codeChild = React.Children.toArray(children).find(
