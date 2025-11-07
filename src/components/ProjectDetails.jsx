@@ -229,11 +229,11 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
   const modalRef = useRef(null);
 
   // Handle clicks outside the modal
-  const handleClickOutside = (e) => {
+  const handleClickOutside = useCallback((e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       onClose();
     }
-  };
+  }, [onClose]);
 
   useEffect(() => {
     if (isOpen) {
@@ -247,7 +247,7 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isOpen, handleClickOutside]);
 
   if (!project) return null;
 
