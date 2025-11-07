@@ -139,7 +139,10 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
   const [error, setError] = useState('');
   const [repoStats, setRepoStats] = useState(null);
 
+
+
   // Always fetch fresh data on project change
+  // eslint-disable-next-line no-use-before-define
   useEffect(() => {
     if (!isOpen || !project) {
       return;
@@ -170,7 +173,8 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
     setLoading(true);
     fetchProjectDetails();
     
-  }, [isOpen, project?.github, project?.id, fetchProjectDetails]); // Always fetch when these change
+    // eslint-disable-next-line no-use-before-define
+  }, [isOpen, project?.github, project?.id, fetchProjectDetails, project]); // Always fetch when these change
 
   const fetchProjectDetails = useCallback(async () => {
     setLoading(true);
@@ -399,7 +403,7 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
     } finally {
       setLoading(false);
     }
-  }, [project]);
+  }, [project, repoStats?.default_branch]);
 
   if (!project) return null;
 
