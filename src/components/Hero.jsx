@@ -10,8 +10,7 @@ const Hero = () => {
     "Backend Developer",
     "API Designer", 
     "Problem Solver",
-    "Tech Enthusiast",
-    "Team Leader"
+    "Tech Enthusiast"
   ], []);
 
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
