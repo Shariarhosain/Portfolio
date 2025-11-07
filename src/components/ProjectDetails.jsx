@@ -178,7 +178,13 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
         }
       } else {
         const readmeData = await readmeResponse.json();
-        const readmeContentDecoded = atob(readmeData.content);
+        // Decode from base64 and then from UTF-8
+        const binaryString = atob(readmeData.content);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        const readmeContentDecoded = new TextDecoder('utf-8').decode(bytes);
         setReadmeContent(readmeContentDecoded);
       }
       
@@ -266,11 +272,11 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.7, opacity: 0, y: 50 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="bg-gray-900/95 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+            className="bg-gray-900/95 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="relative p-6 border-b border-white/10">
+            <div className="relative p-6 border-b border-white/10 flex-shrink-0">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <h2 className="text-3xl font-bold text-white mb-2">
@@ -375,7 +381,7 @@ const ProjectDetails = ({ project, isOpen, onClose }) => {
             </div>
 
             {/* Content */}
-            <div className="overflow-y-auto max-h-[60vh] p-6">
+            <div className="overflow-y-auto flex-grow p-6">
               {loading ? (
                 <div className="flex items-center justify-center py-12">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-400"></div>

@@ -12,15 +12,15 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gray-900 text-white py-12 px-6">
+    <footer className="bg-gray-900 text-white py-12 px-6 sm:px-8">
       <div className="container mx-auto">
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 text-center md:text-left">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h3 className="text-2xl font-bold mb-4 text-gradient">Shariar Hosain</h3>
+            <h3 className="text-2xl font-bold mb-4 text-gradient">Shariar Hosain Sanny</h3>
             <p className="text-gray-400">
               Backend Developer passionate about building scalable and reliable applications.
             </p>
@@ -54,7 +54,7 @@ const Footer = () => {
             transition={{ delay: 0.2 }}
           >
             <h4 className="text-xl font-bold mb-4">Connect</h4>
-            <div className="flex space-x-4">
+            <div className="flex space-x-4 justify-center md:justify-start">
               {socialLinks.map((social) => (
                 <motion.a
                   key={social.label}
@@ -79,15 +79,16 @@ const Footer = () => {
           viewport={{ once: true }}
           className="border-t border-gray-800 pt-8 text-center"
         >
-          <p className="text-gray-400 flex items-center justify-center space-x-2">
-            <span>© {currentYear} Md. Shariar Hosain Sanny. Made with</span>
+          <p className="text-gray-400 text-sm">
+            <span>© {currentYear} Md. Shariar Hosain Sanny. Made with </span>
             <motion.span
               animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
+              transition={{ duration: 1, repeat: Infinity, repeatType: 'loop' }}
+              className="inline-block mx-1"
             >
               <FaHeart className="text-red-500" />
             </motion.span>
-            <span>and React</span>
+            <span>and React.</span>
           </p>
         </motion.div>
       </div>
