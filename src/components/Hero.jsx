@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaEnvelope, FaDownload } from 'react-icons/fa';
 
 const Hero = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -183,23 +183,46 @@ const Hero = () => {
           </motion.a>
         </motion.div>
 
-        <motion.a
+        <motion.div
           variants={itemVariants}
-          href="#about"
-          className="inline-block mb-8"
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8"
         >
-          <motion.button
-            whileHover={{ 
-              scale: 1.05, 
-              boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)" 
-            }}
-            whileTap={{ scale: 0.95 }}
-            className="relative overflow-hidden bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 text-white px-10 py-4 rounded-full font-semibold shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 group"
+          <motion.a
+            href="#about"
+            className="inline-block"
           >
-            <span className="relative z-10">Explore My Work</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </motion.button>
-        </motion.a>
+            <motion.button
+              whileHover={{ 
+                scale: 1.05, 
+                boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)" 
+              }}
+              whileTap={{ scale: 0.95 }}
+              className="relative overflow-hidden bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 text-white px-10 py-4 rounded-full font-semibold shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 group"
+            >
+              <span className="relative z-10">Explore My Work</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </motion.button>
+          </motion.a>
+
+          <motion.a
+            href="/resume.pdf"
+            download="Shariar_Hosain_Resume.pdf"
+            className="inline-block"
+          >
+            <motion.button
+              whileHover={{ 
+                scale: 1.05, 
+                boxShadow: "0 20px 40px rgba(16, 185, 129, 0.3)" 
+              }}
+              whileTap={{ scale: 0.95 }}
+              className="relative overflow-hidden bg-gradient-to-r from-emerald-500 via-green-500 to-teal-600 text-white px-10 py-4 rounded-full font-semibold shadow-2xl hover:shadow-green-500/50 transition-all duration-300 group flex items-center gap-2"
+            >
+              <FaDownload className="relative z-10" size={18} />
+              <span className="relative z-10">Download Resume</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-teal-600 via-emerald-600 to-green-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </motion.button>
+          </motion.a>
+        </motion.div>
 
         {/* Animated Scroll Down Indicator */}
         <motion.div

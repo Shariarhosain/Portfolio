@@ -64,19 +64,24 @@ const About = () => {
               Backend Developer | Problem Solver
             </h3>
             <p className="text-gray-300 mb-6 leading-relaxed text-lg">
-              As a backend developer at MAK Tech Solution, I focus on building efficient, scalable, 
-              and reliable applications. I have experience in teaching, problem-solving, and leading 
-              development teams through complex technical challenges.
+              I'm passionate about building web applications and solving real-world problems through code. 
+              With experience in backend and full stack development, I love collaborating on innovative 
+              projects and contributing to the tech community.
             </p>
             <p className="text-gray-300 mb-6 leading-relaxed text-lg">
-              My expertise includes Node.js, Express.js, Nest.js, Prisma, Redis, and RabbitMQ. 
-              I've built microservices, implemented caching solutions, and developed robust backend 
-              architectures for various high-impact projects.
+              You should consider working with me because of my strong analytical thinking, problem-solving 
+              mindset, and genuine passion for web technologies. Whenever I face challenges, I enjoy diving 
+              deep into solutions—partly because teaching others pushes me to understand problems thoroughly!
+            </p>
+            <p className="text-gray-300 mb-6 leading-relaxed text-lg">
+              I can work effectively under pressure, and honestly, I enjoy that intensity. I have strong 
+              knowledge in PostgreSQL, MySQL, SQL databases, and backend frameworks like Node.js (Express.js, 
+              Nest.js). I'm also skilled with Prisma ORM, frontend basics, real-time communication (Socket.io), 
+              and requirement analysis.
             </p>
             <p className="text-gray-300 leading-relaxed text-lg">
-              I graduated with a GPA of 3.86/4.00 in Computer Science and Engineering from AIUB. 
-              My passion for education and helping others motivates me to make a positive impact 
-              in the tech community.
+              I chose to major in Information Systems because information is everywhere—and the web is the 
+              best place to capture and harness it. That's why I love coding for the web.
             </p>
           </motion.div>
 
