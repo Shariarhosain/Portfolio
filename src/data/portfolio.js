@@ -121,7 +121,42 @@ export const projectsData = [
     github: "#",
     demo: "https://taxiloguk.co.uk/",
     gradient: "from-blue-500 to-indigo-500"
-  }
+  },
+  {
+  title: "MyLedger - Therellwalker Backend API",
+  description:
+    "A complete authentication and trading backend system featuring email verification, Google OAuth 2.0, user management, trade journaling, and reflection tracking. Includes OTP verification, JWT-based auth, and Prisma ORM with PostgreSQL.",
+  technologies: [
+    "Node.js",
+    "Express.js",
+    "Google OAuth 2.0",
+    "Nodemailer",
+    "bcryptjs"
+  ],
+  image: "/images/myledger.png",
+  github: "https://github.com/Shariarhosain/myledger",
+  demo: "https://myledger.mtscorporate.com/",
+  gradient: "from-green-500 to-emerald-500"
+},
+{
+  title: "Money Tracker Application",
+  description:
+    "A full-stack financial tracking system that helps users manage income, expenses, savings, and analytics. Includes authentication, recurring transactions, visual charts, and category management — all with a responsive Tailwind-based UI.",
+  technologies: [
+    "Node.js",
+    "Express.js",
+    "Tailwind CSS",
+    "Chart.js",
+    "PWA Features (Installable App, Add to Home Screen)"
+   
+  ],
+  image: "/images/money.png",
+  github: "https://github.com/Shariarhosain/-Money-Tracker",
+  demo: "https://money.batteryqk.com",
+  gradient: "from-emerald-500 to-teal-500"
+}
+
+
 ];
 
 // Experience Data

@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaGithub, FaExternalLinkAlt, FaArrowRight } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-import { projectsData } from '../data/portfolio';
+import { FaGithub, FaExternalLinkAlt, FaArrowLeft, FaLinkedin, FaEnvelope, FaCode } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
+import { projectsData, personalInfo } from '../data/portfolio';
 import ProjectDetails from './ProjectDetails';
 
-const Projects = () => {
-  // Show only the first 8 projects
-  const featuredProjects = projectsData.slice(0, 8);
+const AllProjects = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleProjectClick = (project) => {
     // If project has live demo, open it in new tab
@@ -28,8 +27,13 @@ const Projects = () => {
     setSelectedProject(null);
   };
 
+  // Scroll to top on component mount
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
-    <section id="projects" className="relative py-20 px-6 bg-gradient-to-br from-slate-900 via-blue-900/30 to-gray-900 overflow-hidden">
+    <section className="relative min-h-screen py-20 px-6 bg-gradient-to-br from-slate-900 via-blue-900/30 to-gray-900 overflow-hidden">
       {/* Animated Background Particles */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
@@ -46,30 +50,46 @@ const Projects = () => {
       </div>
       
       <div className="container mx-auto relative z-10">
+        {/* Back Button */}
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8"
+        >
+          <Link 
+            to="/" 
+            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors duration-300 group"
+          >
+            <FaArrowLeft className="group-hover:-translate-x-1 transition-transform duration-300" />
+            <span className="text-lg font-medium">Back to Home</span>
+          </Link>
+        </motion.div>
+
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
-            Featured Projects
-          </h2>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+            All Projects
+          </h1>
           <div className="w-20 h-1 bg-gradient-to-r from-cyan-400 to-purple-600 mx-auto"></div>
           <p className="text-gray-300 mt-6 max-w-2xl mx-auto text-lg">
-            Here are some of my recent projects showcasing my backend development skills and expertise
+            Explore my complete portfolio of {projectsData.length} projects showcasing backend development skills and expertise
           </p>
         </motion.div>
 
+        {/* Projects Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
-          {featuredProjects.map((project, index) => (
+          {projectsData.map((project, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
               whileHover={{ 
                 y: -15, 
                 scale: 1.02,
@@ -146,27 +166,93 @@ const Projects = () => {
           ))}
         </div>
 
-        {/* See More Projects Button */}
+        {/* Explore More Section */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="flex justify-center mt-16"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="mt-20 mb-10"
         >
-          <Link to="/projects">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -5 }}
-              whileTap={{ scale: 0.95 }}
-              className="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-semibold text-white shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 overflow-hidden"
+          <div className="max-w-4xl mx-auto bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-lg border border-cyan-500/20 rounded-3xl p-10 shadow-2xl">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent">
+                Interested in My Work?
+              </h2>
+              <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+                These are just some of my projects. I'm always working on something new and exciting. 
+                Let's connect and discuss how I can help bring your ideas to life!
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 mt-8">
+              {/* View GitHub */}
+              <motion.a
+                href={personalInfo.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                className="group relative bg-gradient-to-br from-gray-700/50 to-gray-800/50 border border-gray-600/30 hover:border-cyan-400/50 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/20"
+              >
+                <FaGithub className="text-5xl text-cyan-400 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
+                <h3 className="text-xl font-bold text-white mb-2">View GitHub</h3>
+                <p className="text-gray-400 text-sm">Explore more repositories</p>
+              </motion.a>
+
+              {/* Contact Me */}
+              <motion.button
+                onClick={() => {
+                  navigate('/');
+                  setTimeout(() => {
+                    const element = document.getElementById('contact');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }, 100);
+                }}
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                className="group relative bg-gradient-to-br from-blue-600/50 to-blue-700/50 border border-blue-500/30 hover:border-blue-400/50 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20"
+              >
+                <FaEnvelope className="text-5xl text-blue-300 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
+                <h3 className="text-xl font-bold text-white mb-2">Get in Touch</h3>
+                <p className="text-gray-200 text-sm">Let's discuss your project</p>
+              </motion.button>
+
+              {/* View LinkedIn */}
+              <motion.a
+                href={personalInfo.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                className="group relative bg-gradient-to-br from-blue-700/50 to-indigo-700/50 border border-blue-600/30 hover:border-blue-400/50 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20"
+              >
+                <FaLinkedin className="text-5xl text-blue-400 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
+                <h3 className="text-xl font-bold text-white mb-2">LinkedIn Profile</h3>
+                <p className="text-gray-200 text-sm">Connect professionally</p>
+              </motion.a>
+            </div>
+
+            {/* Additional CTA */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="mt-10 text-center"
             >
-              <span className="relative z-10 flex items-center gap-3 text-lg">
-                View All Projects
-                <FaArrowRight className="group-hover:translate-x-2 transition-transform duration-300" />
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </motion.button>
-          </Link>
+              <Link to="/">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-medium text-white shadow-lg hover:shadow-cyan-500/50 transition-all duration-300"
+                >
+                  <FaArrowLeft />
+                  Back to Homepage
+                </motion.button>
+              </Link>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
 
@@ -180,4 +266,4 @@ const Projects = () => {
   );
 };
 
-export default Projects;
+export default AllProjects;

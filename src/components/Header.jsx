@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,14 +36,47 @@ const Header = () => {
   }, []);
 
   const navItems = [
-    { name: 'Home', href: '#home' },
-    { name: 'About', href: '#about' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Education', href: '#education' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', href: '#home', route: '/' },
+    { name: 'About', href: '#about', route: '/' },
+    { name: 'Experience', href: '#experience', route: '/' },
+    { name: 'Skills', href: '#skills', route: '/' },
+    { name: 'Projects', href: '#projects', route: '/', altRoute: '/projects' },
+    { name: 'Education', href: '#education', route: '/' },
+    { name: 'Contact', href: '#contact', route: '/' },
   ];
+
+  const handleNavClick = (e, item) => {
+    e.preventDefault();
+    
+    // Special handling for Projects link
+    if (item.name === 'Projects' && location.pathname === '/') {
+      // On home page, just scroll to projects section
+      const element = document.querySelector(item.href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else if (item.name === 'Projects' && location.pathname === '/projects') {
+      // Already on projects page, scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (location.pathname !== '/') {
+      // If we're not on home page, navigate to home first
+      navigate('/');
+      // Wait for navigation to complete, then scroll to section
+      setTimeout(() => {
+        const element = document.querySelector(item.href);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      // On home page, just scroll to section
+      const element = document.querySelector(item.href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    setIsOpen(false);
+  };
 
   return (
     <AnimatePresence>
@@ -64,11 +100,13 @@ const Header = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8">
             {navItems.map((item, index) => {
-              const isActive = activeSection === item.href.replace('#', '');
+              const isActive = activeSection === item.href.replace('#', '') || 
+                              (item.name === 'Projects' && location.pathname === '/projects');
               return (
                 <motion.a
                   key={item.name}
                   href={item.href}
+                  onClick={(e) => handleNavClick(e, item)}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
@@ -77,7 +115,7 @@ const Header = () => {
                     y: -2,
                     textShadow: "0 0 10px rgba(59, 130, 246, 0.8)"
                   }}
-                  className={`relative transition-all duration-300 font-medium group ${
+                  className={`relative transition-all duration-300 font-medium group cursor-pointer ${
                     isActive 
                       ? 'text-cyan-400' 
                       : 'text-gray-300 hover:text-cyan-400'
@@ -115,7 +153,7 @@ const Header = () => {
               <motion.a
                 key={item.name}
                 href={item.href}
-                onClick={() => setIsOpen(false)}
+                onClick={(e) => handleNavClick(e, item)}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
