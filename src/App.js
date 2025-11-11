@@ -12,12 +12,18 @@ import Projects from './components/Projects';
 import AllProjects from './components/AllProjects';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import MorphingCursor from './components/MorphingCursor';
+import ParticleBackground from './components/ParticleBackground';
+import GlowEffect from './components/GlowEffect';
 
 function App() {
   return (
     <HelmetProvider>
       <Router>
         <SEOHead />
+        <MorphingCursor />
+        <ParticleBackground />
+        <GlowEffect />
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-gray-900 text-white">
           <Header />
           <Routes>

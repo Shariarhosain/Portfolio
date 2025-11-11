@@ -13,6 +13,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaPaperPlane, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 import emailjs from '@emailjs/browser';
+import MagneticButton from './MagneticButton';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -230,17 +231,18 @@ const Contact = () => {
                 </motion.div>
               )}
 
-              <motion.button
-                whileHover={{ scale: isSubmitting ? 1 : 1.05, boxShadow: isSubmitting ? "none" : "0 20px 40px rgba(59, 130, 246, 0.3)" }}
-                whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
-                type="submit"
-                disabled={isSubmitting}
-                className={`w-full py-4 rounded-lg font-semibold shadow-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
-                  isSubmitting 
-                    ? 'bg-gray-600 cursor-not-allowed' 
-                    : 'bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 text-white hover:shadow-xl'
-                }`}
-              >
+              <MagneticButton strength={isSubmitting ? 0 : 0.3}>
+                <motion.button
+                  whileHover={{ scale: isSubmitting ? 1 : 1.05, boxShadow: isSubmitting ? "none" : "0 20px 40px rgba(59, 130, 246, 0.3)" }}
+                  whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`w-full py-4 rounded-lg font-semibold shadow-lg transition-all duration-300 flex items-center justify-center space-x-2 shimmer ${
+                    isSubmitting 
+                      ? 'bg-gray-600 cursor-not-allowed' 
+                      : 'bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 text-white hover:shadow-xl'
+                  }`}
+                >
                 {isSubmitting ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
@@ -252,7 +254,8 @@ const Contact = () => {
                     <FaPaperPlane />
                   </>
                 )}
-              </motion.button>
+                </motion.button>
+              </MagneticButton>
             </form>
           </motion.div>
 
@@ -265,26 +268,27 @@ const Contact = () => {
           >
             <h3 className="text-2xl font-bold mb-6 text-white">Contact Information</h3>
             {contactInfo.map((info, index) => (
-              <motion.a
-                key={index}
-                href={info.link}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ 
-                  scale: 1.05, 
-                  x: 10,
-                  boxShadow: "0 20px 40px rgba(59, 130, 246, 0.2)"
-                }}
-                className="flex items-center space-x-4 p-6 bg-gray-800/60 backdrop-blur-sm border border-white/10 rounded-xl shadow-lg hover:border-cyan-400/30 transition-all duration-300 group"
-              >
-                <div className="text-3xl text-cyan-400 group-hover:text-white transition-colors duration-300">{info.icon}</div>
-                <div>
-                  <h4 className="font-bold text-white group-hover:text-cyan-400 transition-colors duration-300">{info.title}</h4>
-                  <p className="text-gray-300">{info.value}</p>
-                </div>
-              </motion.a>
+              <MagneticButton key={index} strength={0.4}>
+                <motion.a
+                  href={info.link}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ 
+                    scale: 1.05, 
+                    x: 10,
+                    boxShadow: "0 20px 40px rgba(59, 130, 246, 0.2)"
+                  }}
+                  className="flex items-center space-x-4 p-6 bg-gray-800/60 backdrop-blur-sm border border-white/10 rounded-xl shadow-lg hover:border-cyan-400/30 transition-all duration-300 group shimmer hover-glow"
+                >
+                  <div className="text-3xl text-cyan-400 group-hover:text-white group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">{info.icon}</div>
+                  <div>
+                    <h4 className="font-bold text-white group-hover:text-cyan-400 transition-colors duration-300">{info.title}</h4>
+                    <p className="text-gray-300">{info.value}</p>
+                  </div>
+                </motion.a>
+              </MagneticButton>
             ))}
 
             <motion.div

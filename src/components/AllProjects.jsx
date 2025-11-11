@@ -4,6 +4,8 @@ import { FaGithub, FaExternalLinkAlt, FaArrowLeft, FaLinkedin, FaEnvelope } from
 import { Link, useNavigate } from 'react-router-dom';
 import { projectsData, personalInfo } from '../data/portfolio';
 import ProjectDetails from './ProjectDetails';
+import MagneticButton from './MagneticButton';
+import ParallaxContainer from './ParallaxContainer';
 
 const AllProjects = () => {
   const [selectedProject, setSelectedProject] = useState(null);
@@ -55,13 +57,13 @@ const AllProjects = () => {
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-8"
+          className="mb-8 relative z-50"
         >
           <Link 
             to="/" 
-            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors duration-300 group"
+            className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-all duration-300 group bg-gray-800/40 px-4 py-2 rounded-lg border border-cyan-400/20 hover:border-cyan-400/60 hover:bg-gray-800/60 backdrop-blur-sm hover:scale-105"
           >
-            <FaArrowLeft className="group-hover:-translate-x-1 transition-transform duration-300" />
+            <FaArrowLeft className="group-hover:-translate-x-2 transition-transform duration-300" />
             <span className="text-lg font-medium">Back to Home</span>
           </Link>
         </motion.div>
@@ -85,22 +87,24 @@ const AllProjects = () => {
         {/* Projects Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
           {projectsData.map((project, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
-              whileHover={{ 
-                y: -15, 
-                scale: 1.02,
-                boxShadow: "0 25px 50px rgba(59, 130, 246, 0.3)"
-              }}
-              onClick={() => handleProjectClick(project)}
-              className={`bg-gray-800/60 backdrop-blur-sm border border-white/10 rounded-3xl shadow-2xl overflow-hidden hover:border-cyan-400/30 transition-all duration-500 group cursor-pointer ${
-                project.demo !== "#" ? 'hover:border-blue-400/50 hover:shadow-blue-500/20' : 'hover:border-cyan-400/50'
-              }`}
-            >
-              <div className="relative h-56 overflow-hidden">
+            <ParallaxContainer key={index} intensity={0.03}>
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                whileHover={{ 
+                  y: -15, 
+                  scale: 1.02,
+                  rotateZ: 1,
+                  boxShadow: "0 25px 50px rgba(59, 130, 246, 0.3)"
+                }}
+                onClick={() => handleProjectClick(project)}
+                className={`bg-gray-800/60 backdrop-blur-sm border border-white/10 rounded-3xl shadow-2xl overflow-hidden hover:border-cyan-400/30 transition-all duration-500 group cursor-pointer hover-glow shimmer flex flex-col h-full ${
+                  project.demo !== "#" ? 'hover:border-blue-400/50 hover:shadow-blue-500/20' : 'hover:border-cyan-400/50'
+                }`}
+                style={{ minHeight: '480px', maxHeight: '480px' }}
+              >
+                <div className="relative h-48 overflow-hidden flex-shrink-0">
                 <img
                   src={project.image}
                   alt={project.title}
@@ -128,16 +132,16 @@ const AllProjects = () => {
                 </div>
               </div>
 
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-cyan-400 transition-colors duration-300">
+              <div className="p-6 flex flex-col flex-grow">
+                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-cyan-400 transition-colors duration-300 line-clamp-2" style={{ minHeight: '3.5rem' }}>
                   {project.title}
                 </h3>
-                <p className="text-gray-300 mb-4 text-sm leading-relaxed">
+                <p className="text-gray-300 mb-4 text-sm leading-relaxed line-clamp-3 flex-grow">
                   {project.description}
                 </p>
 
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.technologies.map((tech, i) => (
+                <div className="flex flex-wrap gap-2 mb-4" style={{ minHeight: '4rem' }}>
+                  {project.technologies.slice(0, 4).map((tech, i) => (
                     <span
                       key={i}
                       className="px-3 py-1 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-400 rounded-full text-xs font-medium border border-cyan-500/20 hover:border-cyan-400/40 transition-colors duration-300"
@@ -145,9 +149,14 @@ const AllProjects = () => {
                       {tech}
                     </span>
                   ))}
+                  {project.technologies.length > 4 && (
+                    <span className="px-3 py-1 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-400 rounded-full text-xs font-medium border border-cyan-500/20">
+                      +{project.technologies.length - 4}
+                    </span>
+                  )}
                 </div>
 
-                <div className="flex space-x-4">
+                <div className="flex space-x-4 mt-auto">
                   {project.github !== "#" && (
                     <div className="flex items-center space-x-2 text-gray-300 group-hover:text-cyan-400 transition-colors duration-300">
                       <FaGithub className="group-hover:rotate-6 transition-transform duration-300" />
@@ -162,7 +171,8 @@ const AllProjects = () => {
                   )}
                 </div>
               </div>
-            </motion.div>
+              </motion.div>
+            </ParallaxContainer>
           ))}
         </div>
 
@@ -186,52 +196,58 @@ const AllProjects = () => {
 
             <div className="grid md:grid-cols-3 gap-6 mt-8">
               {/* View GitHub */}
-              <motion.a
-                href={personalInfo.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                className="group relative bg-gradient-to-br from-gray-700/50 to-gray-800/50 border border-gray-600/30 hover:border-cyan-400/50 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/20"
-              >
-                <FaGithub className="text-5xl text-cyan-400 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
-                <h3 className="text-xl font-bold text-white mb-2">View GitHub</h3>
-                <p className="text-gray-400 text-sm">Explore more repositories</p>
-              </motion.a>
+              <MagneticButton strength={0.4}>
+                <motion.a
+                  href={personalInfo.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="block group relative bg-gradient-to-br from-gray-700/50 to-gray-800/50 border border-gray-600/30 hover:border-cyan-400/50 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/20 shimmer"
+                >
+                  <FaGithub className="text-5xl text-cyan-400 mx-auto mb-4 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
+                  <h3 className="text-xl font-bold text-white mb-2">View GitHub</h3>
+                  <p className="text-gray-400 text-sm">Explore more repositories</p>
+                </motion.a>
+              </MagneticButton>
 
               {/* Contact Me */}
-              <motion.button
-                onClick={() => {
-                  navigate('/');
-                  setTimeout(() => {
-                    const element = document.getElementById('contact');
-                    if (element) {
-                      element.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }, 100);
-                }}
-                whileHover={{ scale: 1.05, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                className="group relative bg-gradient-to-br from-blue-600/50 to-blue-700/50 border border-blue-500/30 hover:border-blue-400/50 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20"
-              >
-                <FaEnvelope className="text-5xl text-blue-300 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
-                <h3 className="text-xl font-bold text-white mb-2">Get in Touch</h3>
-                <p className="text-gray-200 text-sm">Let's discuss your project</p>
-              </motion.button>
+              <MagneticButton strength={0.4}>
+                <motion.button
+                  onClick={() => {
+                    navigate('/');
+                    setTimeout(() => {
+                      const element = document.getElementById('contact');
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }, 100);
+                  }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-full group relative bg-gradient-to-br from-blue-600/50 to-blue-700/50 border border-blue-500/30 hover:border-blue-400/50 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 shimmer"
+                >
+                  <FaEnvelope className="text-5xl text-blue-300 mx-auto mb-4 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
+                  <h3 className="text-xl font-bold text-white mb-2">Get in Touch</h3>
+                  <p className="text-gray-200 text-sm">Let's discuss your project</p>
+                </motion.button>
+              </MagneticButton>
 
               {/* View LinkedIn */}
-              <motion.a
-                href={personalInfo.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.05, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                className="group relative bg-gradient-to-br from-blue-700/50 to-indigo-700/50 border border-blue-600/30 hover:border-blue-400/50 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20"
-              >
-                <FaLinkedin className="text-5xl text-blue-400 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
-                <h3 className="text-xl font-bold text-white mb-2">LinkedIn Profile</h3>
-                <p className="text-gray-200 text-sm">Connect professionally</p>
-              </motion.a>
+              <MagneticButton strength={0.4}>
+                <motion.a
+                  href={personalInfo.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="block group relative bg-gradient-to-br from-blue-700/50 to-indigo-700/50 border border-blue-600/30 hover:border-blue-400/50 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 shimmer"
+                >
+                  <FaLinkedin className="text-5xl text-blue-400 mx-auto mb-4 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300" />
+                  <h3 className="text-xl font-bold text-white mb-2">LinkedIn Profile</h3>
+                  <p className="text-gray-200 text-sm">Connect professionally</p>
+                </motion.a>
+              </MagneticButton>
             </div>
 
             {/* Additional CTA */}

@@ -4,6 +4,8 @@ import { FaGithub, FaExternalLinkAlt, FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { projectsData } from '../data/portfolio';
 import ProjectDetails from './ProjectDetails';
+import ParallaxContainer from './ParallaxContainer';
+import MagneticButton from './MagneticButton';
 
 const Projects = () => {
   // Show only the first 8 projects
@@ -64,23 +66,25 @@ const Projects = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
           {featuredProjects.map((project, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ 
-                y: -15, 
-                scale: 1.02,
-                boxShadow: "0 25px 50px rgba(59, 130, 246, 0.3)"
-              }}
-              onClick={() => handleProjectClick(project)}
-              className={`bg-gray-800/60 backdrop-blur-sm border border-white/10 rounded-3xl shadow-2xl overflow-hidden hover:border-cyan-400/30 transition-all duration-500 group cursor-pointer ${
-                project.demo !== "#" ? 'hover:border-blue-400/50 hover:shadow-blue-500/20' : 'hover:border-cyan-400/50'
-              }`}
-            >
-              <div className="relative h-56 overflow-hidden">
+            <ParallaxContainer key={index} intensity={0.03}>
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ 
+                  y: -15, 
+                  scale: 1.02,
+                  rotateZ: 1,
+                  boxShadow: "0 25px 50px rgba(59, 130, 246, 0.3)"
+                }}
+                onClick={() => handleProjectClick(project)}
+                className={`bg-gray-800/60 backdrop-blur-sm border border-white/10 rounded-3xl shadow-2xl overflow-hidden hover:border-cyan-400/30 transition-all duration-500 group cursor-pointer hover-glow shimmer flex flex-col h-full ${
+                  project.demo !== "#" ? 'hover:border-blue-400/50 hover:shadow-blue-500/20' : 'hover:border-cyan-400/50'
+                }`}
+                style={{ minHeight: '480px', maxHeight: '480px' }}
+              >
+              <div className="relative h-48 overflow-hidden flex-shrink-0">
                 <img
                   src={project.image}
                   alt={project.title}
@@ -108,16 +112,16 @@ const Projects = () => {
                 </div>
               </div>
 
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-cyan-400 transition-colors duration-300">
+              <div className="p-6 flex flex-col flex-grow">
+                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-cyan-400 transition-colors duration-300 line-clamp-2" style={{ minHeight: '3.5rem' }}>
                   {project.title}
                 </h3>
-                <p className="text-gray-300 mb-4 text-sm leading-relaxed">
+                <p className="text-gray-300 mb-4 text-sm leading-relaxed line-clamp-3 flex-grow">
                   {project.description}
                 </p>
 
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.technologies.map((tech, i) => (
+                <div className="flex flex-wrap gap-2 mb-4" style={{ minHeight: '4rem' }}>
+                  {project.technologies.slice(0, 4).map((tech, i) => (
                     <span
                       key={i}
                       className="px-3 py-1 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-400 rounded-full text-xs font-medium border border-cyan-500/20 hover:border-cyan-400/40 transition-colors duration-300"
@@ -125,9 +129,14 @@ const Projects = () => {
                       {tech}
                     </span>
                   ))}
+                  {project.technologies.length > 4 && (
+                    <span className="px-3 py-1 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-400 rounded-full text-xs font-medium border border-cyan-500/20">
+                      +{project.technologies.length - 4}
+                    </span>
+                  )}
                 </div>
 
-                <div className="flex space-x-4">
+                <div className="flex space-x-4 mt-auto">
                   {project.github !== "#" && (
                     <div className="flex items-center space-x-2 text-gray-300 group-hover:text-cyan-400 transition-colors duration-300">
                       <FaGithub className="group-hover:rotate-6 transition-transform duration-300" />
@@ -142,7 +151,8 @@ const Projects = () => {
                   )}
                 </div>
               </div>
-            </motion.div>
+              </motion.div>
+            </ParallaxContainer>
           ))}
         </div>
 
@@ -154,19 +164,21 @@ const Projects = () => {
           transition={{ delay: 0.3 }}
           className="flex justify-center mt-16"
         >
-          <Link to="/projects">
-            <motion.button
-              whileHover={{ scale: 1.05, y: -5 }}
-              whileTap={{ scale: 0.95 }}
-              className="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-semibold text-white shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 overflow-hidden"
-            >
-              <span className="relative z-10 flex items-center gap-3 text-lg">
-                View All Projects
-                <FaArrowRight className="group-hover:translate-x-2 transition-transform duration-300" />
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </motion.button>
-          </Link>
+          <MagneticButton strength={0.5}>
+            <Link to="/projects">
+              <motion.button
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+                className="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full font-semibold text-white shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 overflow-hidden shimmer"
+              >
+                <span className="relative z-10 flex items-center gap-3 text-lg">
+                  View All Projects
+                  <FaArrowRight className="group-hover:translate-x-2 transition-transform duration-300" />
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </motion.button>
+            </Link>
+          </MagneticButton>
         </motion.div>
       </div>
 
