@@ -2,10 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent ResizeObserver errors from showing */
+@media screen {
+  * {
+    resize: none;
+  }
+}
+
 @layer base {
   body {
-    @apply bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white;
-    cursor: none;
+    @apply bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800 text-white;
+    cursor: auto;
   }
   
   html {
@@ -13,13 +20,26 @@
   }
   
   * {
-    cursor: none;
+    cursor: auto;
   }
   
-  /* Allow pointer events for interactive elements */
-  a, button, [role="button"], .cursor-pointer {
-    cursor: none;
+  /* Modern cursor styles with subtle red accent */
+  body {
+    cursor: default;
+  }
+  
+  a, button, [role="button"], .cursor-pointer, input[type="submit"], input[type="button"] {
+    cursor: pointer;
     pointer-events: auto !important;
+  }
+  
+  input[type="text"], input[type="email"], textarea, [contenteditable] {
+    cursor: text;
+  }
+  
+  /* Modern hover effects for interactive elements */
+  a:hover, button:hover, [role="button"]:hover, .cursor-pointer:hover {
+    transition: all 0.2s ease;
   }
 }
 
