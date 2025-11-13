@@ -25,6 +25,8 @@ import {
   SiTailwindcss,
   SiPostman,
   SiSwagger,
+  SiWordpress,
+  SiPrisma,
 } from 'react-icons/si';
 
 const Skills = () => {
@@ -47,6 +49,7 @@ const Skills = () => {
         { name: 'Tailwind CSS', icon: <SiTailwindcss />, color: 'text-cyan-400' },
         { name: 'HTML5', icon: <FaHtml5 />, color: 'text-orange-500' },
         { name: 'CSS3', icon: <FaCss3Alt />, color: 'text-blue-500' },
+        { name: 'WordPress', icon: <SiWordpress />, color: 'text-blue-600' },
       ],
     },
     {
@@ -56,7 +59,7 @@ const Skills = () => {
         { name: 'MySQL', icon: <FaDatabase />, color: 'text-orange-400' },
         { name: 'MongoDB', icon: <SiMongodb />, color: 'text-green-400' },
         { name: 'Redis', icon: <SiRedis />, color: 'text-red-400' },
-        { name: 'Prisma', icon: <FaDatabase />, color: 'text-indigo-400' },
+        { name: 'Prisma', icon: <SiPrisma />, color: 'text-indigo-400' },
       ],
     },
     {
